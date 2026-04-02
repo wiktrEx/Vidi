@@ -1,81 +1,482 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vidi - Otwórz swój Potencjał</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #fe2c55; --secondary: #25f4ee; --dark: #121212; --light: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark); color: var(--light); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; }
-        body::before { content: ""; position: absolute; width: 300px; height: 300px; background: var(--primary); filter: blur(150px); opacity: 0.15; top: 10%; left: 10%; z-index: -1; }
-        .container { max-width: 600px; padding: 40px; text-align: center; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; backdrop-filter: blur(10px); }
-        h1 { font-size: 3rem; font-weight: 900; margin-bottom: 10px; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .tagline { font-size: 1.1rem; color: var(--secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-        p { line-height: 1.6; color: #ccc; margin-bottom: 30px; }
-        .status-box { padding: 15px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); display: inline-block; margin-top: 10px; }
-        .spinner { border: 3px solid rgba(255,255,255,0.1); border-left-color: var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* Footer i Linki */
-        .footer { margin-top: 40px; font-size: 0.85rem; color: #666; }
-        .footer a { color: var(--secondary); text-decoration: none; margin: 0 10px; transition: 0.3s; cursor: pointer; }
-        .footer a:hover { color: var(--primary); }
-
-        /* Modal dla Polityki */
-        #privacy-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: #1e1e1e; padding: 30px; border-radius: 16px; max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left; border: 1px solid #333; }
-        .close-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="tagline">Vidi Project</div>
-        <h1>Otwórz swój Potencjał</h1>
-        <p>Inteligentne zarządzanie contentem. Automatyzuj i rozwijaj swój profil na TikToku dzięki Vidi.</p>
-
-        <div class="status-box" id="auth-status">
-            <div class="spinner"></div>
-            <span id="status-text">Oczekiwanie na autoryzację...</span>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2026 Vidi. <a onclick="openPrivacy()">Polityka Prywatności</a></p>
-        </div>
-    </div>
-
-    <div id="privacy-modal">
-        <div class="modal-content">
-            <h2 style="color: var(--primary);">Polityka Prywatności Vidi</h2>
-            <p style="font-size: 0.9rem;">1. <b>Dane:</b> Vidi uzyskuje dostęp do Twojego konta TikTok wyłącznie w celu zarządzania treściami (publikacja, analityka).<br><br>
-            2. <b>Przechowywanie:</b> Twoje dane logowania (tokeny) są przechowywane wyłącznie lokalnie w Twojej aplikacji (na Twoim komputerze).<br><br>
-            3. <b>Udostępnianie:</b> Nie sprzedajemy ani nie udostępniamy Twoich danych osobom trzecim.<br><br>
-            4. <b>Cofnięcie zgody:</b> Możesz odłączyć Vidi w dowolnym momencie w ustawieniach konta TikTok.</p>
-            <button class="close-btn" onclick="closePrivacy()">Zamknij</button>
-        </div>
-    </div>
+    <meta name="description"
+        content="Download Vidi wiktrEx. Pre-configured YouTube statistics monitoring application built for creators and analysts. Easily track YouTube analytics, monitor channel performance. Made by Vidi Team.">
+    <title>Vidi - YouTube Analytics Monitor</title>
+    <link rel="icon" type="image/png" href="0.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <script>
-        function openPrivacy() { document.getElementById('privacy-modal').style.display = 'flex'; }
-        function closePrivacy() { document.getElementById('privacy-modal').style.display = 'none'; }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('code')) {
-            const statusText = document.getElementById('status-text');
-            statusText.innerText = "Łączenie z aplikacją Vidi...";
-            const localAppUrl = `http://127.0.0.1:8723/oauth/callback?${urlParams.toString()}`;
-
-            fetch(localAppUrl, { mode: 'no-cors' })
-                .then(() => {
-                    statusText.innerText = "Zalogowano! Możesz wrócić do aplikacji.";
-                    document.querySelector('.spinner').style.display = 'none';
-                    document.getElementById('auth-status').style.background = "rgba(37, 244, 238, 0.1)";
-                })
-                .catch(() => { window.location.href = localAppUrl; });
-        } else {
-            document.getElementById('auth-status').innerHTML = "Gotowy do działania.";
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#0d1a26',
+                        primary: '#5a80a0',
+                        primaryHover: '#4a6d8a',
+                        surface: '#192837',
+                    },
+                }
+            }
         }
     </script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="antialiased selection:bg-[#455a64] selection:text-white">
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="w-16 h-16 border-4 border-white/10 border-t-[#455a64] rounded-full animate-spin"></div>
+    </div>
+
+    <div class="noise-bg"></div>
+
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="aurora-blob w-[500px] h-[500px] top-[-10%] left-[-10%] opacity-40"></div>
+        <div class="aurora-blob w-[600px] h-[600px] bottom-[-10%] right-[-10%] opacity-30"></div>
+    </div>
+
+    <nav class="fixed left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
+        <div id="navbar-container"
+            class="pointer-events-auto mt-0 w-full max-w-full rounded-none border-b border-white/10 bg-[#0d1a26]/80 backdrop-blur-md py-3 flex justify-center items-center relative shadow-lg">
+
+            <div class="w-full max-w-6xl px-6 flex justify-between items-center h-full">
+
+                <a href="#" class="flex items-center gap-x-3 group">
+                    <div class="relative">
+                        <div
+                            class="absolute inset-0 bg-[#5a80a0] blur-lg opacity-40 group-hover:opacity-60 transition-opacity">
+                        </div>
+                        <img src="0.png" alt="Vidi Logo" class="relative h-8 w-8"
+                            data-translate-key="logo_alt" data-translate-type="alt">
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">Vidi</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8">
+                    <div class="flex gap-6 text-sm font-medium text-gray-300">
+                        <a href="#features" class="nav-link hover:text-white transition-colors"
+                            data-translate-key="nav_features">Features</a>
+                        <a href="#showcase" class="nav-link hover:text-white transition-colors"
+                            data-translate-key="nav_showcase">Showcase</a>
+                        <a href="#faq" class="nav-link hover:text-white transition-colors"
+                            data-translate-key="nav_faq">FAQ</a>
+                        <a href="#community" class="nav-link hover:text-white transition-colors"
+                            data-translate-key="nav_github">GitHub</a>
+                    </div>
+
+                    <div class="h-4 w-px bg-white/10"></div>
+
+                    <div class="relative group z-50">
+                        <button
+                            class="flex items-center text-sm font-medium text-gray-300 hover:text-white transition-colors gap-1">
+                            <span id="current-lang-desktop">EN</span>
+                            <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div
+                            class="absolute right-0 top-full pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
+                            <div
+                                class="bg-[#1a0b2e] border border-white/10 rounded-xl p-2 w-40 flex flex-col gap-1 shadow-2xl overflow-hidden">
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="en">English</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="pl">Polski</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="ru">Русский</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="es">Español</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="ua">Українська</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="de">Deutsch</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="fr">Français</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="pt">Português</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="zh">中文</a>
+                                <a href="#"
+                                    class="px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    data-lang="hi">हिन्दी</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://mega.nz/file/H6AERAbD#tu6auAgBJBJUBjBGBJzkYYK21gqz0nyctsijligoxdc"
+                        class="btn-shimmer bg-[#5a80a0] text-white px-5 py-2 rounded-full text-sm font-semibold shadow-[0_0_20px_rgba(90,128,160,0.3)] hover:shadow-[0_0_30px_rgba(90,128,160,0.5)] hover:scale-105 active:scale-95 transition-all duration-300"
+                        data-translate-key="nav_download">
+                        Download
+                    </a>
+                </div>
+
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden absolute top-full left-0 right-0 mt-4 mx-4 glass-panel rounded-2xl p-4 flex-col gap-4 pointer-events-auto">
+            <a href="#features" class="block p-2 text-gray-300 hover:text-white"
+                data-translate-key="nav_features">Features</a>
+            <a href="#showcase" class="block p-2 text-gray-300 hover:text-white"
+                data-translate-key="nav_showcase">Showcase</a>
+            <a href="#faq" class="block p-2 text-gray-300 hover:text-white" data-translate-key="nav_faq">FAQ</a>
+            <a href="https://mega.nz/file/H6AERAbD#tu6auAgBJBJUBjBGBJzkYYK21gqz0nyctsijligoxdc"
+                class="block w-full text-center bg-[#5a80a0] text-white py-3 rounded-xl font-semibold hover:scale-105 active:scale-95 transition-all"
+                data-translate-key="nav_download">Download</a>
+            <div class="grid grid-cols-5 gap-2 pt-4 border-t border-white/10 text-center text-xs text-gray-400">
+                <span data-lang="en">EN</span><span data-lang="pl">PL</span><span data-lang="ru">RU</span><span data-lang="de">DE</span><span data-lang="fr">FR</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="relative z-10">
+        <section class="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
+            <div class="absolute inset-0 -z-20">
+                <img src="0.png" alt="Background"
+                    class="w-full h-full object-cover opacity-40 mix-blend-overlay" decoding="async">
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1a26]/80 to-[#0d1a26] -z-10"></div>
+
+            <div class="container relative mx-auto px-6 text-center z-10">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-[#d8b4fe] mb-8 reveal">
+                    <span class="w-2 h-2 rounded-full bg-[#5a80a0] animate-pulse"></span>
+                    <span data-translate-key="hero_badge">v2.0 Now Available</span>
+                </div>
+
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter text-white mb-6 reveal stagger-1 leading-[1.1]"
+                    data-translate-key="hero_title">
+                    Experience <br>
+                    <span class="text-gradient animate-gradient">YouTube Analytics</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 reveal stagger-2 leading-relaxed"
+                    data-translate-key="hero_subtitle">
+                    A powerful YouTube statistics monitoring application that combines elegance with comprehensive analytics. Use preconfigured monitoring tools that are ready to use, track your favorite channels and easily monitor YouTube performance metrics.
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 reveal stagger-3">
+                    <a href="https://mega.nz/file/H6AERAbD#tu6auAgBJBJUBjBGBJzkYYK21gqz0nyctsijligoxdc"
+                        class="btn-shimmer bg-[#5a80a0] hover:bg-[#4a6d8a] text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg shadow-[#5a80a0]/25 hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto"
+                        data-translate-key="hero_button_download">
+                        Download Now
+                    </a>
+                    <a href="#features"
+                        class="px-8 py-4 rounded-xl text-lg font-medium text-white border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-300 w-full sm:w-auto"
+                        data-translate-key="hero_button_learn">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-translate-key="features_title">Why
+                        Choose Vidi?</h2>
+                    <p class="text-gray-400" data-translate-key="features_subtitle">Everything you need for YouTube analytics, nothing you don't.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="glass-panel p-8 rounded-3xl hover:border-[#5a80a0]/50 transition-colors duration-300 group reveal stagger-1 tilt-card">
+                        <div class="tilt-content">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3" data-translate-key="feature_1_title">Real-time
+                                Analytics</h3>
+                            <p class="text-gray-400 leading-relaxed" data-translate-key="feature_1_text">Built on a
+                                minimal base, Vidi is optimized for speed and responsiveness, delivering instant YouTube statistics updates.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="glass-panel p-8 rounded-3xl hover:border-[#5a80a0]/50 transition-colors duration-300 group reveal stagger-2 tilt-card">
+                        <div class="tilt-content">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3" data-translate-key="feature_2_title">Channel
+                                Monitoring</h3>
+                            <p class="text-gray-400 leading-relaxed" data-translate-key="feature_2_text">With comprehensive channel tracking and performance metrics built-in, you can easily monitor YouTube analytics after only a couple of clicks.</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="glass-panel p-8 rounded-3xl hover:border-[#5a80a0]/50 transition-colors duration-300 group reveal stagger-3 tilt-card">
+                        <div class="tilt-content">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3" data-translate-key="feature_3_title">Performance
+                                Insights</h3>
+                            <p class="text-gray-400 leading-relaxed" data-translate-key="feature_3_text">Comes
+                                pre-packaged with advanced analytics tools and performance tracking that can boost your YouTube monitoring experience.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="py-24 bg-gradient-to-b from-transparent to-[#0d1a26]/50">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col items-center mb-12 text-center reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4" data-translate-key="showcase_title">
+                        Beautifully Crafted Interface</h2>
+                    <p class="text-gray-400" data-translate-key="showcase_subtitle">An interface that's both powerful
+                        and a pleasure to use for YouTube analytics.</p>
+                </div>
+
+                <div class="relative glass-panel p-2 rounded-2xl max-w-5xl mx-auto shadow-2xl reveal">
+                    <div class="overflow-hidden rounded-xl aspect-video bg-black/50 relative">
+                        <img id="showcase-image" src="" alt="Application Screenshot"
+                            class="w-full h-full object-cover transition-opacity duration-500">
+                        <div class="absolute inset-0 flex items-center justify-between p-4 pointer-events-none">
+                            <button id="prev-button"
+                                class="pointer-events-auto p-3 rounded-full bg-black/30 backdrop-blur-md text-white hover:bg-white/10 transition-all border border-white/10">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <button id="next-button"
+                                class="pointer-events-auto p-3 rounded-full bg-black/30 backdrop-blur-md text-white hover:bg-white/10 transition-all border border-white/10">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-32 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-8 reveal"
+                        data-translate-key="more_showcase_title">Interface Styles</h2>
+
+                    <div class="mb-12 reveal">
+                        <div class="segmented-control">
+                            <div class="segment-slider" id="slider-bg"></div>
+                            <button id="btn-vidi" class="segment-btn segment-active"
+                                data-translate-key="style_btn_interface">
+                                Interface
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="grid-vidi"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-5xl mx-auto transition-all duration-500">
+                        <div
+                            class="group glass-panel rounded-2xl overflow-hidden p-1 reveal stagger-1 transition-transform duration-300 hover:-translate-y-2">
+                            <div class="overflow-hidden rounded-xl aspect-video">
+                                <img src="1.png"
+                                    class="w-full h-full object-cover group-hover:opacity-90 transition-opacity">
+                            </div>
+                            <div class="py-3 font-medium text-white">Default View</div>
+                        </div>
+                        <div
+                            class="group glass-panel rounded-2xl overflow-hidden p-1 reveal stagger-2 transition-transform duration-300 hover:-translate-y-2">
+                            <div class="overflow-hidden rounded-xl aspect-video">
+                                <img src="2.png"
+                                    class="w-full h-full object-cover group-hover:opacity-90 transition-opacity">
+                            </div>
+                            <div class="py-3 font-medium text-white">Analytics Dashboard</div>
+                        </div>
+                        <div
+                            class="group glass-panel rounded-2xl overflow-hidden p-1 reveal stagger-3 transition-transform duration-300 hover:-translate-y-2">
+                            <div class="overflow-hidden rounded-xl aspect-video">
+                                <img src="3.png"
+                                    class="w-full h-full object-cover group-hover:opacity-90 transition-opacity">
+                            </div>
+                            <div class="py-3 font-medium text-white">Channel Overview</div>
+                        </div>
+                        <div
+                            class="group glass-panel rounded-2xl overflow-hidden p-1 reveal stagger-4 transition-transform duration-300 hover:-translate-y-2">
+                            <div class="overflow-hidden rounded-xl aspect-video">
+                                <img src="4.png"
+                                    class="w-full h-full object-cover group-hover:opacity-90 transition-opacity">
+                            </div>
+                            <div class="py-3 font-medium text-white">Statistics Panel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="py-24 relative">
+            <div class="container mx-auto px-6 max-w-3xl">
+                <div class="text-center mb-12 reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-12" data-translate-key="faq_title">Frequently
+                        Asked Questions</h2>
+                </div>
+
+                <div class="space-y-4" id="faq-accordion">
+                    <div class="glass-panel rounded-xl overflow-hidden reveal stagger-1 group">
+                        <button
+                            class="faq-question w-full flex justify-between items-center text-left p-6 hover:bg-white/5 transition-colors">
+                            <span class="text-lg font-semibold text-white" data-translate-key="faq_q1">What is Vidi?</span>
+                            <svg class="faq-arrow w-5 h-5 text-[#9d4edd] transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer bg-black/20 border-t border-white/5">
+                            <div class="p-6 text-gray-400 leading-relaxed" data-translate-key="faq_a1">
+                                Vidi is a YouTube statistics monitoring application. It is designed to be a fast and user-friendly analytics tool, pre-configured for YouTube channel monitoring and performance tracking.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl overflow-hidden reveal stagger-2 group">
+                        <button
+                            class="faq-question w-full flex justify-between items-center text-left p-6 hover:bg-white/5 transition-colors">
+                            <span class="text-lg font-semibold text-white" data-translate-key="faq_q2">Who is Vidi for?</span>
+                            <svg class="faq-arrow w-5 h-5 text-[#9d4edd] transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer bg-black/20 border-t border-white/5">
+                            <div class="p-6 text-gray-400 leading-relaxed" data-translate-key="faq_a2">
+                                Vidi is ideal for content creators who need easy access to YouTube analytics and performance metrics, analysts looking for comprehensive monitoring tools, and anyone who wants a beautiful and performant YouTube tracking application.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl overflow-hidden reveal stagger-3 group">
+                        <button
+                            class="faq-question w-full flex justify-between items-center text-left p-6 hover:bg-white/5 transition-colors">
+                            <span class="text-lg font-semibold text-white" data-translate-key="faq_q3">Is Vidi free to use?</span>
+                            <svg class="faq-arrow w-5 h-5 text-[#9d4edd] transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer bg-black/20 border-t border-white/5">
+                            <div class="p-6 text-gray-400 leading-relaxed" data-translate-key="faq_a3">
+                                Yes and always will be. Vidi is a free and open-source project. You can download, use, modify, and distribute it freely with accordance to GNU GPL v3 license.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl overflow-hidden reveal stagger-4 group">
+                        <button
+                            class="faq-question w-full flex justify-between items-center text-left p-6 hover:bg-white/5 transition-colors">
+                            <span class="text-lg font-semibold text-white" data-translate-key="faq_q4">What platforms does it support?</span>
+                            <svg class="faq-arrow w-5 h-5 text-[#9d4edd] transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer bg-black/20 border-t border-white/5">
+                            <div class="p-6 text-gray-400 leading-relaxed" data-translate-key="faq_a4">
+                                Vidi uses a beautifully designed web interface by default. All features can be accessed through any modern web browser. <br><br> However, you can pick carefully crafted desktop application instead during the installation. With it, you can experience truly marvelous native effects all around the application.
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel rounded-xl overflow-hidden reveal stagger-5 group">
+                        <button
+                            class="faq-question w-full flex justify-between items-center text-left p-6 hover:bg-white/5 transition-colors">
+                            <span class="text-lg font-semibold text-white" data-translate-key="faq_q5">Does Vidi require API keys?</span>
+                            <svg class="faq-arrow w-5 h-5 text-[#9d4edd] transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-answer bg-black/20 border-t border-white/5">
+                            <div class="p-6 text-gray-400 leading-relaxed" data-translate-key="faq_a5">
+                                No, it does not require API keys. However, it ships minimal system requirements. Average users are advised to use the web version, while power users can use the desktop version with advanced features.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="community" class="py-24 text-center border-t border-white/5 relative bg-[#0f0518]">
+            <div class="container mx-auto px-6 reveal">
+                <h2 class="text-4xl font-bold text-white mb-4" data-translate-key="community_title">Open-Source Project
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto mb-8" data-translate-key="community_subtitle">
+                    Vidi is built with fully open-sourced code. Fork, modify, or contribute on GitHub.
+                </p>
+                <a href="https://github.com/Petexy/Linexin" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 bg-[#9d4edd]/20 hover:bg-[#9d4edd]/30 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 hover:scale-105 active:scale-95 border border-[#9d4edd]/40 shadow-[0_0_24px_rgba(157,78,221,0.25)] backdrop-blur-md"
+                    data-translate-key="community_button">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Visit GitHub
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="relative z-10 py-8 text-center text-sm text-gray-500 border-t border-white/5 bg-[#05010a]">
+        <div class="container mx-auto px-6">
+            <p data-translate-key="footer_copy">© 2025-2026 Vidi Project</p>
+            <p class="mt-2" data-translate-key="footer_love">Designed with ❤️ for the YouTube analytics community.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
+
 </html>
