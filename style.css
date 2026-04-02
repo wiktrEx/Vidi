@@ -1,0 +1,219 @@
+:root {
+    --color-primary: #5a80a0;
+}
+
+body {
+    background-color: #0d1a26;
+    color: #e0e7eb;
+    overflow-x: hidden;
+}
+
+.noise-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.aurora-blob {
+    position: absolute;
+    background: radial-gradient(circle, rgba(90, 128, 160, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.glass-panel {
+    background: rgba(25, 40, 55, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+}
+
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn-shimmer:hover::after {
+    left: 100%;
+    transition: 0.7s ease-in-out;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #fff 0%, #c0d8e4 50%, #5a80a0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.animate-gradient {
+    background-size: 200% auto;
+    animation: gradientFlow 3s linear infinite;
+}
+
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: #5a80a0;
+    transition: width 0.3s ease-in-out;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.tilt-card {
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+    transition: transform 0.1s ease-out;
+}
+
+.tilt-content {
+    transform: translateZ(20px);
+}
+
+/* --- NEW: FAQ Animation Styles --- */
+.faq-answer {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    border-top-color: transparent;
+    /* Hide border when closed */
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s ease,
+        border-color 0.3s ease;
+}
+
+.faq-answer.open {
+    opacity: 1;
+    border-top-color: rgba(255, 255, 255, 0.05);
+    /* Restore border */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0d1a26;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a5068;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5a80a0;
+}
+
+.segmented-control {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 999px;
+    display: inline-flex;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.segment-btn {
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    position: relative;
+    z-index: 10;
+    transition: color 0.3s;
+}
+
+.segment-active {
+    color: white;
+}
+
+.segment-inactive {
+    color: #94a3b8;
+}
+
+.segment-inactive:hover {
+    color: #e0e7eb;
+}
+
+.segment-slider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    background: #5a80a0;
+    border-radius: 999px;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    z-index: 1;
+    box-shadow: 0 0 20px rgba(90, 128, 160, 0.5);
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: #0d1a26;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease-out;
+}
+
+#navbar-container {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
